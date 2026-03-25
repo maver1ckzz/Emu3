@@ -9,8 +9,8 @@ with open('/hdd/wangty/new_task/cervical_vertebra/dataset/bbox/foraminal_l.json'
 with open('/hdd/wangty/new_task/cervical_vertebra/dataset/bbox/foraminal_r.json',"r") as f:
     f_r=json.load(f)
 img_folder='/hdd/wangty/new_task/images/origin_png/tra'
-new_folder='/mnt/nvme_share/wangty/img/tra_256'
-box_folder='/home/wangty/github/emu3/Emu3/wty/data/box'
+new_folder='/mnt/nvme_share/wangty/img/tra_512'
+box_folder='/home/wangty/github/emu3/Emu3/wty/data/box512'
 import os
 import cv2
 import json
@@ -21,7 +21,7 @@ from tqdm import tqdm
 # new_folder = '/hdd/wangty/new_task/images/processed_png/tra'
 # box_folder = '/hdd/wangty/new_task/boxes'
 
-target_size = 256
+target_size = 512
 
 # 根据你的描述，9个索引对应的文件名
 file_names = ['3.png', '3-4.png', '4.png', '4-5.png', '5.png', '5-6.png', '6.png', '6-7.png', '7.png']
@@ -37,7 +37,7 @@ new_f_l = {}
 new_f_r = {}
 
 # ================= 2. 定义核心转换函数 =================
-def transform_box(box, w_orig, h_orig, target_size=256):
+def transform_box(box, w_orig, h_orig, target_size=512):
     """同步更新定位框坐标 [xmin, ymin, xmax, ymax]"""
     if not box or len(box) != 4:
         return box
@@ -69,7 +69,7 @@ def transform_box(box, w_orig, h_orig, target_size=256):
 
     return [x1_new, y1_new, x2_new, y2_new]
 
-def process_image(img, target_size=256):
+def process_image(img, target_size=512):
     """图像裁剪与缩放，返回处理后的图像及原始宽高"""
     h_orig, w_orig = img.shape[:2]
     short_edge = min(w_orig, h_orig)

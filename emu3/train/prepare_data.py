@@ -35,6 +35,7 @@ def smart_resize(image, image_area: int = 720 * 720):
 
 def main():
     args = prepare_args()
+    print(args.image_area)
 
     image_processor = Emu3VisionVQImageProcessor.from_pretrained(args.model_path)
     image_tokenizer = Emu3VisionVQModel.from_pretrained(args.model_path, device_map="cuda:0")
