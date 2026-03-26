@@ -10,7 +10,7 @@ import transformers as tf
 import torch
 
 from emu3.mllm import Emu3Config, Emu3Tokenizer, Emu3ForCausalLM
-from emu3.train.datasets import Emu3FeatureDataset
+from emu3.train.datasets import Emu3FeatureDataset,Emu3InterleaveFeatureDataset
 
 
 @dataclass
@@ -27,6 +27,7 @@ class DataArguments:
     ignore_index: int = field(default=-100)
     visual_token_pattern: str = field(default="<|visual token {token_id:0>6d}|>")
     codebook_size: Optional[int] = field(default=32768)
+    dataset_type: str = field(default="default")
 
 
 @dataclass
@@ -75,7 +76,12 @@ def train():
         use_fast=False,
     )
 
-    train_dataset = Emu3FeatureDataset(data_args, tokenizer=tokenizer)
+    if data_args.dataset_type == "interleave":
+        print("use interleave dataset")
+        train_dataset = Emu3InterleaveFeatureDataset(data_args, tokenizer=tokenizer)
+    else:
+        train_dataset = Emu3FeatureDataset(data_args, tokenizer=tokenizer)
+
 
     trainer = tf.Trainer(
         model=model,

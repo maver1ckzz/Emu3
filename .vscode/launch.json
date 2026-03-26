@@ -1,0 +1,68 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Dataset",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/emu3/train/test_dataset.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "env": {
+        "CUDA_VISIBLE_DEVICES": "1",
+        "PYTHONPATH": "${workspaceFolder}",
+      }
+    },
+    {
+      "name": "Debug Emu3 Train Single GPU",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/emu3/train/train.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "env": {
+        "CUDA_VISIBLE_DEVICES": "1",
+        "PYTHONPATH": "${workspaceFolder}",
+        "WORLD_SIZE": "1",
+        "RANK": "0",
+        "MASTER_ADDR": "127.0.0.1",
+        "MASTER_PORT": "23456"
+      },
+      "args": [
+        "--model_name_or_path", "/hdd/wangty/model/Emu3-Stage1",
+        // "--deepspeed", "scripts/zero3_offload.json",
+        "--data_path", "/mnt/nvme_share/wangty/emu3_data/c3_4_256_tokenized/list/train.json",
+        "--null_prompt_prob", "0.05",
+        "--apply_loss_on_only_vision", "True",
+        "--apply_loss_on_only_text", "False",
+        "--image_area", "65536",
+        "--max_position_embeddings", "10240",
+        "--output_dir", "/hdd/wangty/diffuser_workdir/emu3/tra_c3-4/Emu3_debug",
+        "--bf16", "True",
+        "--tf32", "True",
+        "--num_train_epochs", "12",
+        "--per_device_train_batch_size", "1",
+        "--gradient_accumulation_steps", "8",
+        "--eval_strategy", "no",
+        "--save_strategy", "no",
+        "--save_total_limit", "1",
+        "--learning_rate", "2e-5",
+        "--min_learning_rate", "2e-6",
+        "--weight_decay", "0.1",
+        "--max_grad_norm", "5.0",
+        "--adam_beta1", "0.9",
+        "--adam_beta2", "0.95",
+        "--adam_epsilon", "1e-6",
+        "--warmup_steps", "30",
+        "--lr_scheduler_type", "cosine_with_min_lr",
+        "--logging_steps", "1",
+        "--gradient_checkpointing", "True",
+        "--dataloader_num_workers", "4",
+        "--report_to", "none",
+        "--run_name", "Emu3-Stage1-C34-Axial-256_2e-5_12ep_debug"
+      ]
+    }
+  ]
+}
