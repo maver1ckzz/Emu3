@@ -104,6 +104,22 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# 个人实验
+wty/
+
+# notebook
+*.ipynb
+
+#图片
+test_img/
+
+# shell脚本（如果是临时的）
+scripts/bash/
+
+# 临时文件
+*.log
+*.tmp
+
 # Environments
 .env
 .venv
