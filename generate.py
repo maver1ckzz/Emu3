@@ -1,5 +1,5 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 from PIL import Image
 from transformers import AutoTokenizer, AutoModel, AutoImageProcessor, AutoModelForCausalLM
@@ -13,7 +13,7 @@ from emu3.mllm.processing_emu3 import Emu3Processor
 with open("wty/data/c3_4_test.json", "r") as f:
     data = json.load(f)
 
-EMU_HUB = "/hdd/wangty/diffuser_workdir/emu3/tra_c3-4/Emu3-Stage1-C34-Axial-256_8ep"
+EMU_HUB = "/hdd/wangty/diffuser_workdir/emu3/tra_c3-4/Emu3-Stage1-C34-Axial-256_2e-5_12ep"
 VQ_HUB = "/hdd/wangty/model/Emu3-VisionTokenizer"
 
 model = AutoModelForCausalLM.from_pretrained(
@@ -31,8 +31,8 @@ image_tokenizer = AutoModel.from_pretrained(VQ_HUB, device_map="cuda:0", trust_r
 processor = Emu3Processor(image_processor, image_tokenizer, tokenizer)
 
 batch_size = 20
-top_k=32
-path = f"/hdd/wangty/diffuser_workdir/gen_img/tra_topk_{top_k}"
+top_k=64
+path = f"/hdd/wangty/diffuser_workdir/gen_img/2e-5_12ep/tra_topk_{top_k}"
 os.makedirs(path, exist_ok=True)
 
 generation_config = GenerationConfig(
