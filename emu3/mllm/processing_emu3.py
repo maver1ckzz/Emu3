@@ -29,7 +29,7 @@ from transformers.tokenization_utils_base import TextInput, PreTokenizedInput
 from transformers.utils import logging
 
 from .utils_emu3 import Emu3PrefixConstrainedLogitsHelper
-
+from .utils_emu3 import Emu3InterleaveGenerationPrefixConstrainedLogitsHelper
 
 logger = logging.get_logger(__name__)
 
@@ -79,6 +79,7 @@ class Emu3Processor(ProcessorMixin):
 
         super().__init__(image_processor, tokenizer, chat_template=chat_template)
         self.const_helper = self.build_const_helper()
+        self.interleave_gen_const_helper = self.build_interleave_generation_const_helper()
 
     @torch.no_grad()
     def __call__(
@@ -332,4 +333,41 @@ class Emu3Processor(ProcessorMixin):
 
     def build_prefix_constrained_fn(self, height, width):
         helper = self.const_helper(height=height, width=width)
+        return helper
+    
+    def build_interleave_generation_const_helper(self):
+        (
+            img_token,
+            eoi_token,
+            eos_token,
+            eol_token,
+            eof_token,
+            pad_token,
+            vis_start,
+            vis_end,
+        ) = self.tokenizer.encode([
+            self.tokenizer.img_token,
+            self.tokenizer.eoi_token,
+            self.tokenizer.eos_token,
+            self.tokenizer.eol_token,
+            self.tokenizer.eof_token,
+            self.tokenizer.pad_token,
+            self.visual_template[0].format(token_id=0),
+            self.visual_template[0].format(token_id=self.vision_tokenizer.config.codebook_size - 1),
+        ])
+
+        const_helper = partial(
+            Emu3InterleaveGenerationPrefixConstrainedLogitsHelper,
+            img_token=img_token,
+            eoi_token=eoi_token,
+            eos_token=eos_token,
+            eol_token=eol_token,
+            eof_token=eof_token,
+            pad_token=pad_token,
+            visual_tokens=list(range(vis_start, vis_end + 1)),
+        )
+        return const_helper
+
+    def build_interleave_generation_prefix_constrained_fn(self, height, width):
+        helper = self.interleave_gen_const_helper(height=height, width=width)
         return helper

@@ -89,10 +89,11 @@ def train():
         train_dataset=train_dataset,
     )
     
-    if list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")):
-        trainer.train(resume_from_checkpoint=True)
-    else:
-        trainer.train()
+    # if list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")):
+    #     trainer.train(resume_from_checkpoint=True)
+    # else:
+    #     trainer.train()
+    trainer.train(resume_from_checkpoint=training_args.resume_from_checkpoint)
     trainer.save_state()
 
     torch.cuda.synchronize()
